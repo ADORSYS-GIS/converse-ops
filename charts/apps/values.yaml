@@ -162,6 +162,25 @@ applications:
         prune: true
         selfHeal: true
 
+  - name: authorino-operator
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    project: ai
+    source:
+      repoURL: https://kuadrant.io/helm-charts
+      targetRevision: 0.22.0
+      chart: authorino-operator
+      helm:
+        releaseName: aieg-crd
+    destination:
+      namespace: authorino-system
+    syncPolicy:
+      syncOptions:
+        - ServerSideApply=true
+      automated:
+        prune: true
+        selfHeal: true
+
   - name: secrets
     finalizers:
       - resources-finalizer.argocd.argoproj.io
