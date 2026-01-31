@@ -139,8 +139,6 @@ applications:
       repoURL: https://github.com/whythatfunction/home-ai-secrets.git
       targetRevision: HEAD
       path: manifests
-      helm:
-        releaseName: converse-secrets
     destination:
       namespace: manifests
     syncPolicy:
