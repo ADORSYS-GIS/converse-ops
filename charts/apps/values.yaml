@@ -172,7 +172,7 @@ applications:
     source:
       repoURL: https://github.com/whythatfunction/home-ai-secrets
       targetRevision: HEAD
-      path: charts/manifests/converse-mcp
+      path: manifests/converse-mcp
       helm:
         releaseName: converse-mcp
     destination:
