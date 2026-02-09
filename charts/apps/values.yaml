@@ -182,22 +182,22 @@ applications:
             useSecureCookies: true
             createSecret: false
             secret:
-              - key: "PHOENIX_SECRET"
+              - name: "PHOENIX_SECRET"
                 valueFrom:
                   secretKeyRef:
                     name: converse-phoenix
                     key: secret
 
-              - key: "PHOENIX_ADMIN_SECRET"
+              - name: "PHOENIX_ADMIN_SECRET"
                 valueFrom:
                   secretKeyRef:
                     name: converse-phoenix
                     key: admin_secret
 
-              - key: "PHOENIX_POSTGRES_PASSWORD"
+              - name: "PHOENIX_POSTGRES_PASSWORD"
                 value: "postgres"
 
-              - key: "PHOENIX_DEFAULT_ADMIN_INITIAL_PASSWORD"
+              - name: "PHOENIX_DEFAULT_ADMIN_INITIAL_PASSWORD"
                 valueFrom:
                   secretKeyRef:
                     name: converse-phoenix
