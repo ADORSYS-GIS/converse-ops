@@ -180,12 +180,36 @@ applications:
           auth:
             disableBasicAuth: true
             useSecureCookies: true
-            secrets:
+            createSecret: false
+            secret:
+              - key: "PHOENIX_SECRET"
+                valueFrom:
+                  secretKeyRef:
+                    name: converse-phoenix
+                    key: secret
+
+              - key: "PHOENIX_ADMIN_SECRET"
+                valueFrom:
+                  secretKeyRef:
+                    name: converse-phoenix
+                    key: admin_secret
+
+              - key: "PHOENIX_POSTGRES_PASSWORD"
+                value: "postgres"
+
+              - key: "PHOENIX_SMTP_PASSWORD"
+                value: ""
+
+              - key: "PHOENIX_DEFAULT_ADMIN_INITIAL_PASSWORD"
+                valueFrom:
+                  secretKeyRef:
+                    name: converse-phoenix
+                    key: admin_initial_password
               - name: PHOENIX_OAUTH2_KEYCLOAK_CLIENT_SECRET
                 valueFrom:
                   secretKeyRef:
                     name: converse-phoenix-keycloak
-                    client_secret: client_secret
+                    key: client_secret
             oauth2:
               enabled: true
               providers:
