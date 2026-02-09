@@ -174,11 +174,18 @@ applications:
         releaseName: phoenix
         valuesObject:
           ingress:
-            host: "converse-analytics.ssegning.com"
+            host: "converse-analytics.camer.digital"
             annotations:
               cert-manager.io/cluster-issuer: cert-home-cert-http
           auth:
             disableBasicAuth: true
+            useSecureCookies: true
+            secrets:
+              - name: PHOENIX_OAUTH2_KEYCLOAK_CLIENT_SECRET
+                valueFrom:
+                  secretKeyRef:
+                    name: converse-phoenix-keycloak
+                    client_secret: client_secret
             oauth2:
               enabled: true
               providers:
@@ -199,7 +206,7 @@ applications:
                   use_pkce: true
 
     destination:
-      namespace: envoy-ai-gateway-system
+      namespace: converse-phoenix
     syncPolicy:
       syncOptions:
         - ServerSideApply=true
