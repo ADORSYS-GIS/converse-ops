@@ -173,6 +173,8 @@ applications:
       helm:
         releaseName: phoenix
         valuesObject:
+          service:
+            type: "ClusterIP"
           ingress:
             host: "analytics.ai.camer.digital"
             annotations:
