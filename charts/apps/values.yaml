@@ -211,14 +211,14 @@ applications:
                   allow_sign_up: true
                   auto_login: true
                   # Advanced: Extract roles from nested Keycloak structure
-                  groups_attribute_path: "resource_access.phoenix.roles"
-                  allowed_groups: ["admin", "developer", "viewer"]
+                  #groups_attribute_path: "resource_access.phoenix.roles"
+                  #allowed_groups: ["admin", "developer", "viewer"]
                   # Advanced: Role mapping - map IDP roles to Phoenix roles (ADMIN, MEMBER, VIEWER)
                   role_attribute_path: "phoenix_role"  # JMESPath to extract role
                   role_mapping: "admin:ADMIN,user:MEMBER,viewer:VIEWER"  # Map IDP roles to Phoenix roles
                   role_attribute_strict: true  # If true, deny access when role cannot be determined
                   use_pkce: true
-                  scopes: "offline_access openid phoenix"
+                  scopes: "openid phoenix"
 
     destination:
       namespace: converse-phoenix
