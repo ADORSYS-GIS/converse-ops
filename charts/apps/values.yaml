@@ -311,6 +311,8 @@ applications:
       helm:
         releaseName: converse-core
         valuesObject:
+          envoy:
+            namespace: "converse-llm"
           tls:
             enabled: true
             domains:
