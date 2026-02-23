@@ -373,3 +373,22 @@ applications:
       automated:
         prune: true
         selfHeal: true
+
+  - name: lightbridge
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    source:
+      repoURL: https://github.com/ADORSYS-GIS/lightbridge-authz
+      targetRevision: HEAD
+      path: charts/lightbridge
+      helm:
+        releaseName: lightbridge
+        valuesObject: { }
+    destination:
+      namespace: converse-lightbridge
+    syncPolicy:
+      syncOptions:
+        - ServerSideApply=true
+      automated:
+        prune: true
+        selfHeal: true
