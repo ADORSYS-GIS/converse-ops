@@ -1,0 +1,21 @@
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: atlassian-mcp
+  namespace: atlasian
+  labels:
+    kubernetes.io/service-name: atlassian-mcp
+addressType: IPv4
+ports:
+  - name: https
+    port: 443
+    protocol: TCP
+endpoints:
+  - addresses:
+      - "185.166.141.16"
+      - "185.166.141.17"
+      - "185.166.141.18"
+    conditions:
+      ready: true
+      serving: true
+      terminating: false
