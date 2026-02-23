@@ -396,7 +396,7 @@ applications:
     source:
       repoURL: https://adorsys-gis.github.io/lightbridge-authz
       targetRevision: 0.5.1
-      chart: lightbridge/lightbridge
+      chart: lightbridge
       helm:
         releaseName: lightbridge
         valuesObject: { }
