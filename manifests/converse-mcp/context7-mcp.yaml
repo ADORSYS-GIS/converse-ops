@@ -2,7 +2,7 @@ apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
   name: mcp-route
-  namespace: converse-llm
+  namespace: context7
 spec:
   parentRefs:
     - name: ai-gateway
@@ -10,7 +10,7 @@ spec:
       kind: Gateway
       group: gateway.networking.k8s.io
 
-  path: "/mcp"
+  path: "/mcp/context7"
 
   backendRefs:
     - name: context7
@@ -22,21 +22,12 @@ spec:
           secretRef:
             name: context7-token
 
-    - name: github-mcp
-      kind: Backend
-      group: gateway.envoyproxy.io
-      path: "/mcp"
-      securityPolicy:
-        apiKey:
-          secretRef:
-            name: github-mcp-token
-
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
   name: context7
-  namespace: converse-llm
+  namespace: context7
 spec:
   endpoints:
     - fqdn:
@@ -48,7 +39,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: BackendTLSPolicy
 metadata:
   name: context7-tls
-  namespace: converse-llm
+  namespace: context7
 spec:
   targetRefs:
     - group: gateway.envoyproxy.io
@@ -57,30 +48,3 @@ spec:
   validation:
     wellKnownCACertificates: "System"
     hostname: mcp.context7.com
-
----
-apiVersion: gateway.envoyproxy.io/v1alpha1
-kind: Backend
-metadata:
-  name: github-mcp
-  namespace: converse-llm
-spec:
-  endpoints:
-    - fqdn:
-        hostname: api.githubcopilot.com
-        port: 443
-
----
-apiVersion: gateway.networking.k8s.io/v1
-kind: BackendTLSPolicy
-metadata:
-  name: github-mcp-tls
-  namespace: converse-llm
-spec:
-  targetRefs:
-    - group: gateway.envoyproxy.io
-      kind: Backend
-      name: github-mcp
-  validation:
-    wellKnownCACertificates: "System"
-    hostname: api.githubcopilot.com
