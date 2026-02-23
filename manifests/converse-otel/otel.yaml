@@ -9,7 +9,7 @@ spec:
     - name: PHOENIX_API_KEY
       valueFrom:
         secretKeyRef:
-          name: phoenix-auth
+          name: pheonix-otel-key
           key: PHOENIX_API_KEY
 
   config:
