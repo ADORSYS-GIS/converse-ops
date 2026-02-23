@@ -4,3 +4,5 @@ resources:
   - brave-search-mcp.yaml
   - firecrawl-mcp.yaml
   - atlassian-mcp.yaml
+  - kubernetes-mcp-deployment.yaml
+  - kubernetes-mcp.yaml

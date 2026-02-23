@@ -16,7 +16,12 @@ spec:
     - name: fire-crawl
       kind: Backend
       group: gateway.envoyproxy.io
-      path: "/fc-74ac7da5d84f441e945b5c2f95371448/v2/mcp"
+      path: "/v2/mcp"
+      securityPolicy:
+        apiKey:
+          secretRef:
+            name: firecrawl-token
+          header: Authorization
 
 ---
 apiVersion: gateway.envoyproxy.io/v1alpha1
