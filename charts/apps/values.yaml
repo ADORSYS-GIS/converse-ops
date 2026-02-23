@@ -156,11 +156,9 @@ applications:
           extProc:
             extraEnvVars:
                 - name: OTEL_EXPORTER_OTLP_ENDPOINT
-                  value: "http://phoenix-svc.converse-phoenix:6006"
+                  value: "http://converse.converse-otel:4317"
                 - name: OTEL_METRICS_EXPORTER
                   value: "none"
-                - name: OTEL_EXPORTER_OTLP_HEADERS
-                  value: 'Authorization=Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJBcGlLZXk6MTMifQ.wqPlCASB3JeDJPuxRMtCoQypQ_b6f45oUKtBhelLtEI'
                 - name: LOG_LEVEL
                   value: "debug"
     destination:
@@ -293,6 +291,22 @@ applications:
       path: manifests/converse-mcp
     destination:
       namespace: converse-llm
+    syncPolicy:
+      syncOptions:
+        - ServerSideApply=true
+      automated:
+        prune: true
+        selfHeal: true
+
+  - name: converse-otel
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    source:
+      repoURL: https://github.com/whythatfunction/home-ai
+      targetRevision: HEAD
+      path: manifests/converse-otel
+    destination:
+      namespace: converse-otel
     syncPolicy:
       syncOptions:
         - ServerSideApply=true
