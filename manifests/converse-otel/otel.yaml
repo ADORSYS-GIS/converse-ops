@@ -32,7 +32,7 @@ spec:
       # Phoenix HTTP ingest endpoint:
       # - If Phoenix is inside the cluster, keep http://
       otlphttp/phoenix:
-        endpoint: "http://phoenix.converse.svc.cluster.local:6006"
+        endpoint: "http://phoenix-svc.converse-phoenix.svc.cluster.local:6006"
         headers:
           # Phoenix docs: Bearer auth; lowercase header for compatibility.
           authorization: "Bearer ${env:PHOENIX_API_KEY}"
