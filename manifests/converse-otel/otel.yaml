@@ -10,7 +10,7 @@ spec:
       valueFrom:
         secretKeyRef:
           name: pheonix-otel-key
-          key: PHOENIX_API_KEY
+          key: token
 
   config:
     receivers:
