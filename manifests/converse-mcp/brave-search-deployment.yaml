@@ -31,7 +31,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: brave-search
-          image: ghcr.io/dericko681/brave-search:latest
+          image: docker.io/mcp/brave-search:latest
           ports:
             - containerPort: 8080
           resources:
