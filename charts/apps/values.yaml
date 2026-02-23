@@ -394,9 +394,9 @@ applications:
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
-      repoURL: https://github.com/ADORSYS-GIS/lightbridge-authz
-      targetRevision: HEAD
-      path: charts/lightbridge
+      repoURL: https://adorsys-gis.github.io/lightbridge-authz
+      targetRevision: 0.5.1
+      chart: lightbridge/lightbridge
       helm:
         releaseName: lightbridge
         valuesObject: { }
