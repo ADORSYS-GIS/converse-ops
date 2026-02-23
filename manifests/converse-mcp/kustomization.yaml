@@ -2,3 +2,5 @@ resources:
   - context7-mcp.yaml
   - brave-search-deployment.yaml
   - brave-search-mcp.yaml
+  - firecrawl-mcp.yaml
+  - atlassian-mcp.yaml
