@@ -395,11 +395,40 @@ applications:
       - resources-finalizer.argocd.argoproj.io
     source:
       repoURL: https://adorsys-gis.github.io/lightbridge-authz
-      targetRevision: 0.5.1
+      targetRevision: 0.5.2
       chart: lightbridge
       helm:
         releaseName: lightbridge
-        valuesObject: { }
+        valuesObject:
+          global:
+            tlsSecretName: authz-tls
+            tls:
+              enabled: false
+          rawRessources:
+            - |
+              apiVersion: cert-manager.io/v1
+              kind: Certificate
+              metadata:
+                name: authz-tls
+                namespace: converse-lightbridge
+              spec:
+                secretName: authz-tls
+                issuerRef:
+                  name: self-signed-ca
+                  kind: ClusterIssuer
+                commonName: lightbridge-api.converse-lightbridge.svc.cluster.local
+                dnsNames:
+                  - lightbridge-api.converse-lightbridge.svc.cluster.local
+                  - lightbridge-opa.converse-lightbridge.svc.cluster.local
+                  - lightbridge-api.converse-lightbridge.svc.cluster
+                  - lightbridge-opa.converse-lightbridge.svc.cluster
+                  - lightbridge-api.converse-lightbridge.svc
+                  - lightbridge-opa.converse-lightbridge.svc
+                  - lightbridge-api.converse-lightbridge
+                  - lightbridge-opa.converse-lightbridge
+                usages:
+                  - server auth
+                  - client auth
     destination:
       namespace: converse-lightbridge
     syncPolicy:
