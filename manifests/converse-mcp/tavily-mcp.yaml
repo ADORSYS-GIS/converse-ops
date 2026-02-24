@@ -1,0 +1,51 @@
+apiVersion: aigateway.envoyproxy.io/v1alpha1
+kind: MCPRoute
+metadata:
+  name: mcp-route
+  namespace: tavily
+spec:
+  parentRefs:
+    - name: ai-gateway
+      namespace: default
+      kind: Gateway
+      group: gateway.networking.k8s.io
+
+  path: "/mcp/tavily"
+
+  backendRefs:
+    - name: tavily
+      kind: Backend
+      group: gateway.envoyproxy.io
+      path: "/mcp/"
+      securityPolicy:
+        apiKey:
+          header: Authorization
+          secretRef:
+            name: tavily-token
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: tavily
+  namespace: tavily
+spec:
+  endpoints:
+    - fqdn:
+        hostname: mcp.tavily.com
+        port: 443
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: BackendTLSPolicy
+metadata:
+  name: tavily-tls
+  namespace: tavily
+spec:
+  targetRefs:
+    - group: gateway.envoyproxy.io
+      kind: Backend
+      name: tavily
+  validation:
+    wellKnownCACertificates: "System"
+    hostname: mcp.tavily.com
