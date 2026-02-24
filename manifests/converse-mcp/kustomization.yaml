@@ -10,3 +10,5 @@ resources:
   - qdrant-mcp-deployment.yaml
   - qdrant-mcp.yaml
   - tavily-mcp.yaml
+  - terraform-mcp-deployment.yaml
+  - terraform-mcp.yaml

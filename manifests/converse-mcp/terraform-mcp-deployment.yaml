@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: terraform
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: terraform-mcp
+  namespace: terraform
+spec:
+  selector:
+    app: terraform-mcp
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: terraform-mcp
+  namespace: terraform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: terraform-mcp
+  template:
+    metadata:
+      labels:
+        app: terraform-mcp
+    spec:
+      containers:
+        - name: terraform-mcp
+          image: hashicorp/terraform-mcp-server:latest
+          args:
+            - "streamable-http"
+            - "--transport-host"
+            - "0.0.0.0"
+          env:
+            - name: MODE
+              value: "streamable-http"
+            - name: PORT
+              value: "8080"
+            - name: HOST
+              value: "0.0.0.0"
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
