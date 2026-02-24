@@ -1,7 +1,7 @@
 apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
-  name: mcp-route
+  name: terraform-mcp-route
   namespace: terraform
 spec:
   parentRefs:

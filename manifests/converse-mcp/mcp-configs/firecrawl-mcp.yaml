@@ -1,7 +1,7 @@
 apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
-  name: f-mcp-route
+  name: firecrawl-mcp-route
   namespace: fire-crawl
 spec:
   parentRefs:

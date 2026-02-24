@@ -1,7 +1,7 @@
 apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
-  name: mcp-route
+  name: atlassian-mcp-route
   namespace: atlassian
 spec:
   parentRefs:

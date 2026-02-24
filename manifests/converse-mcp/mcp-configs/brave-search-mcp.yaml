@@ -1,7 +1,7 @@
 apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
-  name: b-mcp-route
+  name: brave-mcp-route
   namespace: brave-search
 spec:
   parentRefs:
