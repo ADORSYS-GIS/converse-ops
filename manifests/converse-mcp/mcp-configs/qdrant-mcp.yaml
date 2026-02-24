@@ -1,0 +1,31 @@
+apiVersion: aigateway.envoyproxy.io/v1alpha1
+kind: MCPRoute
+metadata:
+  name: mcp-route
+  namespace: qdrant
+spec:
+  parentRefs:
+    - name: ai-gateway
+      namespace: default
+      kind: Gateway
+      group: gateway.networking.k8s.io
+
+  path: "/mcp/qdrant"
+
+  backendRefs:
+    - name: qdrant-mcp
+      kind: Backend
+      group: gateway.envoyproxy.io
+      path: "/mcp"
+
+---
+apiVersion: gateway.envoyproxy.io/v1alpha1
+kind: Backend
+metadata:
+  name: qdrant-mcp
+  namespace: qdrant
+spec:
+  endpoints:
+    - fqdn:
+        hostname: qdrant-mcp.qdrant.svc.cluster.local
+        port: 8080

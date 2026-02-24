@@ -1,0 +1,70 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qdrant-mcp
+  namespace: qdrant
+spec:
+  selector:
+    app: qdrant-mcp
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qdrant-mcp
+  namespace: qdrant
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qdrant-mcp
+  template:
+    metadata:
+      labels:
+        app: qdrant-mcp
+    spec:
+      containers:
+        - name: qdrant-mcp
+          image: node:22
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              echo "Installing build tools..."
+              apt-get update && apt-get install -y build-essential python3 2>&1
+              echo "Installing qdrant-mcp-server..."
+              npm install -g @mhalder/qdrant-mcp-server@1.6.0 2>&1
+              echo "Starting server..."
+              node /usr/local/lib/node_modules/@mhalder/qdrant-mcp-server/build/index.js
+          env:
+            - name: QDRANT_URL
+              value: "http://qdrant.qdrant.svc.cluster.local:6333"
+            - name: EMBEDDING_PROVIDER
+              value: "openai"
+            - name: TRANSPORT_MODE
+              value: "http"
+            - name: HTTP_PORT
+              value: "8080"
+            - name: ENABLE_UNSAFE_STREAMABLE_HTTP_TRANSPORT
+              value: "true"
+            - name: PORT
+              value: "8080"
+            - name: HOST
+              value: "0.0.0.0"
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: qdrant-mcp-secret
+                  key: openaiApiKey
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi
