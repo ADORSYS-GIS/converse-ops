@@ -6,3 +6,6 @@ resources:
   - atlassian-mcp.yaml
   - kubernetes-mcp-deployment.yaml
   - kubernetes-mcp.yaml
+  - qdrant-deployment.yaml
+  - qdrant-mcp-deployment.yaml
+  - qdrant-mcp.yaml
