@@ -45,7 +45,7 @@ spec:
             - name: BRAVE_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: brave-search-secrets
+                  name: brave-search-token
                   key: apiKey
             - name: BRAVE_MCP_TRANSPORT
               value: "http"
