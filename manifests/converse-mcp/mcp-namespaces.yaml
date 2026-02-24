@@ -32,6 +32,16 @@ metadata:
 apiVersion: v1
 kind: Namespace
 metadata:
+  name: playwright
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: puppeteer
+---
+apiVersion: v1
+kind: Namespace
+metadata:
   name: qdrant
 ---
 apiVersion: v1
