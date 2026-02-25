@@ -494,7 +494,7 @@ applications:
             controllers:
               main:
                 cronjob:
-                  # Runs every day at 14:32
+                  # Runs every day at 23:59
                   schedule: "59 23 * * *"
                 initContainers:
                   exporter:
