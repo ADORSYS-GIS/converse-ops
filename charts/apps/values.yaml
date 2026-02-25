@@ -429,7 +429,7 @@ applications:
                   replicas: 1
               persistence:
                 tls:
-                  name: lightbridge-authz-tls
+                  name: authz-tls
 
             opa:
               controllers:
@@ -437,13 +437,13 @@ applications:
                   replicas: 1
               persistence:
                 tls:
-                  name: lightbridge-authz-tls
+                  name: authz-tls
 
             usage:
               enabled: true
               persistence:
                 tls:
-                  name: lightbridge-authz-usage-tls
+                  name: authz-tls
           rawRessources:
             - |
               apiVersion: cert-manager.io/v1
