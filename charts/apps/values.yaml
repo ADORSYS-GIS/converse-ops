@@ -390,20 +390,60 @@ applications:
         prune: true
         selfHeal: true
 
+  - name: converse-chat
+    finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    source:
+      repoURL: https://github.com/whythatfunction/home-ai
+      targetRevision: HEAD
+      path: charts/converse
+      helm:
+        releaseName: converse
+        valuesObject: { }
+    destination:
+      namespace: converse-chat
+    syncPolicy:
+      syncOptions:
+        - ServerSideApply=true
+      automated:
+        prune: true
+        selfHeal: true
+
   - name: lightbridge
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
       repoURL: https://adorsys-gis.github.io/lightbridge-authz
-      targetRevision: 0.5.2
+      targetRevision: 0.5.3
       chart: lightbridge
       helm:
         releaseName: lightbridge
         valuesObject:
           global:
-            tlsSecretName: authz-tls
             tls:
               enabled: false
+
+            api:
+              controllers:
+                main:
+                  replicas: 1
+              persistence:
+                tls:
+                  name: lightbridge-authz-tls
+
+            opa:
+              controllers:
+                main:
+                  replicas: 1
+              persistence:
+                tls:
+                  name: lightbridge-authz-tls
+
+            usage:
+              enabled: true
+              persistence:
+                tls:
+                  name: lightbridge-authz-usage-tls
           rawRessources:
             - |
               apiVersion: cert-manager.io/v1
