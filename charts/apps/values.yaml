@@ -493,6 +493,9 @@ applications:
           mongo-backup:
             controllers:
               main:
+                cronjob:
+                  # Runs every day at 14:32
+                  schedule: "32 14 * * *"
                 initContainers:
                   exporter:
                     env:
