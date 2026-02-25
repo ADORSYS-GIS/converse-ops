@@ -254,7 +254,7 @@ applications:
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
-      repoURL: https://github.com/whythatfunction/home-ai-secrets.git
+      repoURL: https://github.com/ADORSYS-GIS/ai-ops-secrets.git
       targetRevision: HEAD
       path: manifests
     destination:
@@ -270,7 +270,7 @@ applications:
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
-      repoURL: https://github.com/whythatfunction/home-ai
+      repoURL: https://github.com/ADORSYS-GIS/converse-ops
       targetRevision: HEAD
       path: manifests/converse-auth
     destination:
@@ -286,7 +286,7 @@ applications:
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
-      repoURL: https://github.com/whythatfunction/home-ai
+      repoURL: https://github.com/ADORSYS-GIS/converse-ops
       targetRevision: HEAD
       path: manifests/converse-mcp
     destination:
@@ -302,7 +302,7 @@ applications:
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
-      repoURL: https://github.com/whythatfunction/home-ai
+      repoURL: https://github.com/ADORSYS-GIS/converse-ops
       targetRevision: HEAD
       path: manifests/converse-otel
     destination:
@@ -318,7 +318,7 @@ applications:
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
-      repoURL: https://github.com/whythatfunction/home-ai
+      repoURL: https://github.com/ADORSYS-GIS/converse-ops
       targetRevision: HEAD
       path: manifests/converse-deps
     destination:
@@ -394,7 +394,7 @@ applications:
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
-      repoURL: https://github.com/whythatfunction/home-ai
+      repoURL: https://github.com/ADORSYS-GIS/converse-ops
       targetRevision: HEAD
       path: charts/converse
       helm:
