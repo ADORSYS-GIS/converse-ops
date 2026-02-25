@@ -495,7 +495,7 @@ applications:
               main:
                 cronjob:
                   # Runs every day at 14:32
-                  schedule: "32 14 * * *"
+                  schedule: "59 23 * * *"
                 initContainers:
                   exporter:
                     env:
