@@ -423,27 +423,27 @@ applications:
             tls:
               enabled: false
 
-            api:
-              controllers:
-                main:
-                  replicas: 1
-              persistence:
-                tls:
-                  name: authz-tls
+          api:
+            controllers:
+              main:
+                replicas: 1
+            persistence:
+              tls:
+                name: authz-tls
 
-            opa:
-              controllers:
-                main:
-                  replicas: 1
-              persistence:
-                tls:
-                  name: authz-tls
+          opa:
+            controllers:
+              main:
+                replicas: 1
+            persistence:
+              tls:
+                name: authz-tls
 
-            usage:
-              enabled: true
-              persistence:
-                tls:
-                  name: authz-tls
+          usage:
+            enabled: true
+            persistence:
+              tls:
+                name: authz-tls
           rawRessources:
             - |
               apiVersion: cert-manager.io/v1
