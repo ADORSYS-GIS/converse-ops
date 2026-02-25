@@ -473,9 +473,9 @@ librechat:
                 iconURL: "https://s3.camer.digital/converse/public/autumn.png"
                 titleConvo: true
                 titleMethod: "completion"
-                titleModel: "qwen3-coder-30b-a3b-instruct"
+                titleModel: "gemini-2-5-flash-lite"
                 summarize: true
-                summaryModel: "qwen3-coder-30b-a3b-instruct"
+                summaryModel: "gemini-2-5-flash-lite"
                 forcePrompt: false
                 modelDisplayLabel: "Converse AI"
                 headers:
