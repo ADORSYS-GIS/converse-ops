@@ -97,6 +97,15 @@ librechat:
             LOGIN_MAX: "50"
             LOGIN_WINDOW: "1"
 
+            GITHUB_MCP_CLIENT_ID:
+              secretKeyRef:
+                name: librechat-mcp-github
+                key: client_id
+            GITHUB_MCP_SECRET_ID:
+              secretKeyRef:
+                name: librechat-mcp-github
+                key: client_secret
+
             OPENID_CLIENT_ID:
               secretKeyRef:
                 name: librechat-openid-config
@@ -341,6 +350,13 @@ librechat:
               type: "streamable-http"
               initTimeout: 150000
               url: "https://api.githubcopilot.com/mcp"
+              oauth:
+                authorization_url: https://github.com/login/oauth/authorize
+                token_url: https://github.com/login/oauth/access_token
+                client_id: ${GITHUB_MCP_CLIENT_ID}
+                client_secret: ${GITHUB_MCP_SECRET_ID}
+                redirect_uri: https://ai.camer.digital/api/mcp/github/oauth/callback
+                scope: "read execute"
           
           fileConfig:
             endpoints:
@@ -447,7 +463,7 @@ librechat:
                     - "gemini-2-5-pro-reasoning-4096"
                     - "dall-e-3"
                     - "gemini-3-pro"
-                  fetch: false  # Attempt to dynamically fetch available models # disabled because of 401
+                  fetch: true  # Attempt to dynamically fetch available models -> fails, because of 401
                   userIdQuery: true
                 iconURL: "https://s3.camer.digital/converse/public/autumn.png"
                 titleConvo: true
