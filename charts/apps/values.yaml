@@ -420,6 +420,8 @@ applications:
         releaseName: lightbridge
         valuesObject:
           global:
+            image:
+              version: "sha-0ad64f8e85fa5ee40310b40057a3e04c155c1e4e"
             tls:
               enabled: false
 
