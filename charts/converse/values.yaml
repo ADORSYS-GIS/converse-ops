@@ -53,7 +53,7 @@ librechat:
       strategy: RollingUpdate
       serviceAccount:
         identifier: librechat
-      replicas: 2
+      replicas: 1
       pod:
         labels:
           app: librechat-app
@@ -479,9 +479,9 @@ librechat:
     cdn-config:
       enabled: true
       type: persistentVolumeClaim
-      accessMode: ReadWriteMany
-      storageClass: longhorn
-      size: 40Gi
+      accessMode: ReadWriteOnce
+      storageClass: linode-block-storage
+      size: 20Gi
       advancedMounts:
         librechat:
           librechat:
@@ -506,7 +506,7 @@ db:
     enabled: false
   persistence:
     size: 30Gi
-    storageClass: longhorn-local
+    storageClass: linode-block-storage
   architecture: replicaset
   replicaCount: 1 # should be similar to the global mongo replicaCount
   resourcesPreset: small
@@ -515,7 +515,7 @@ search:
   enabled: true
   persistence:
     enabled: true
-    storageClass: "longhorn"
+    storageClass: "linode-block-storage"
   auth:
     # Use an existing Kubernetes secret for the MEILI_MASTER_KEY
     existingMasterKeySecret: "librechat-meili-config"
