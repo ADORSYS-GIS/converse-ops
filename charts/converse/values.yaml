@@ -356,7 +356,7 @@ librechat:
                 client_id: ${GITHUB_MCP_CLIENT_ID}
                 client_secret: ${GITHUB_MCP_SECRET_ID}
                 redirect_uri: https://ai.camer.digital/api/mcp/github/oauth/callback
-                scope: "read execute"
+                scope: "repo repo:status repo_deployment public_repo repo:invite security_events admin:repo_hook write:repo_hook read:repo_hook admin:org write:org read:org admin:org_hook read:public_key write:public_key admin:public_key gist notifications user read:user user:email user:follow project read:project delete_repo write:packages read:packages delete:packages admin:gpg_key write:gpg_key read:gpg_key codespace workflow read:audit_log"
           
           fileConfig:
             endpoints:
