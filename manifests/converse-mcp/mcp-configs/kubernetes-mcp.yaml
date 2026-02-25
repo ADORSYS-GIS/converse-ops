@@ -2,7 +2,7 @@ apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
   name: kubernetes-mcp-route
-  namespace: kubernetes
+  namespace: converse-mcp
 spec:
   parentRefs:
     - name: ai-gateway
@@ -22,7 +22,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
   name: kubernetes-mcp
-  namespace: kubernetes
+  namespace: converse-mcp
 spec:
   endpoints:
     - fqdn:

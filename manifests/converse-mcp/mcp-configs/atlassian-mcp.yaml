@@ -2,7 +2,7 @@ apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
   name: atlassian-mcp-route
-  namespace: atlassian
+  namespace: converse-mcp
 spec:
   parentRefs:
     - name: ai-gateway
@@ -28,7 +28,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
   name: atlassian
-  namespace: atlassian
+  namespace: converse-mcp
 spec:
   endpoints:
     - fqdn:
@@ -41,7 +41,7 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: BackendTLSPolicy
 metadata:
   name: atlassian-tls
-  namespace: atlassian
+  namespace: converse-mcp
 spec:
   targetRefs:
     - group: gateway.envoyproxy.io

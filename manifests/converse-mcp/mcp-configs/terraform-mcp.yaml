@@ -2,7 +2,7 @@ apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
   name: terraform-mcp-route
-  namespace: terraform
+  namespace: converse-mcp
 spec:
   parentRefs:
     - name: ai-gateway
@@ -23,7 +23,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
   name: terraform-mcp
-  namespace: terraform
+  namespace: converse-mcp
 spec:
   endpoints:
     - fqdn:

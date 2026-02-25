@@ -2,7 +2,7 @@ apiVersion: aigateway.envoyproxy.io/v1alpha1
 kind: MCPRoute
 metadata:
   name: qdrant-mcp-route
-  namespace: qdrant
+  namespace: converse-mcp
 spec:
   parentRefs:
     - name: ai-gateway
@@ -23,7 +23,7 @@ apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
   name: qdrant-mcp
-  namespace: qdrant
+  namespace: converse-mcp
 spec:
   endpoints:
     - fqdn:
