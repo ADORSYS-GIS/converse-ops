@@ -27,5 +27,5 @@ metadata:
 spec:
   endpoints:
     - fqdn:
-        hostname: qdrant-mcp.qdrant.svc.cluster.local
+        hostname: qdrant-mcp.converse-mcp.svc.cluster.local
         port: 8080

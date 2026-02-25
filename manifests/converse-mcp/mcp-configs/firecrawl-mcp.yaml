@@ -27,8 +27,8 @@ spec:
 apiVersion: gateway.envoyproxy.io/v1alpha1
 kind: Backend
 metadata:
-  name: converse-mcp
-  namespace: fire-crawl
+  name: fire-crawl
+  namespace: converse-mcp
 spec:
   endpoints:
     - fqdn:

@@ -33,5 +33,5 @@ metadata:
 spec:
   endpoints:
     - fqdn:
-        hostname: brave-search.brave-search.svc.cluster.local
+        hostname: brave-search.converse-mcp.svc.cluster.local
         port: 8080

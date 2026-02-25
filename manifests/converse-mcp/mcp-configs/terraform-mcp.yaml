@@ -27,5 +27,5 @@ metadata:
 spec:
   endpoints:
     - fqdn:
-        hostname: terraform-mcp.terraform.svc.cluster.local
+        hostname: terraform-mcp.converse-mcp.svc.cluster.local
         port: 8080

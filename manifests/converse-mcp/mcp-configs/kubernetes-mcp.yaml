@@ -26,5 +26,5 @@ metadata:
 spec:
   endpoints:
     - fqdn:
-        hostname: kubernetes-mcp.kubernetes.svc.cluster.local
+        hostname: kubernetes-mcp.converse-mcp.svc.cluster.local
         port: 8080
