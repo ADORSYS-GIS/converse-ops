@@ -1,11 +1,13 @@
 resources:
-  - mcp-namespaces.yaml
   - mcp-secrets.yaml
+  - keycloak-deployment.yaml
+  - keycloak-secrets.yaml
+  - github-mcp.yaml
+  - github-pat-envoy-patch.yaml
   - mcp-configs/context7-mcp.yaml
   - mcp-deployments/brave-search-deployment.yaml
   - mcp-configs/brave-search-mcp.yaml
   - mcp-configs/firecrawl-mcp.yaml
-  - mcp-configs/atlassian-mcp.yaml
   - mcp-deployments/kubernetes-mcp-deployment.yaml
   - mcp-configs/kubernetes-mcp.yaml
   - mcp-deployments/qdrant-deployment.yaml
