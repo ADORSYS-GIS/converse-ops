@@ -1,9 +1,5 @@
 resources:
   - mcp-secrets.yaml
-  - keycloak-deployment.yaml
-  - keycloak-secrets.yaml
-  - github-mcp.yaml
-  - github-pat-envoy-patch.yaml
   - mcp-configs/context7-mcp.yaml
   - mcp-deployments/brave-search-deployment.yaml
   - mcp-configs/brave-search-mcp.yaml
