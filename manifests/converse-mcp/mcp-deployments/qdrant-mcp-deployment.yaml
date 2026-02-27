@@ -134,7 +134,7 @@ spec:
               node /app/server.js
           env:
             - name: QDRANT_URL
-              value: "http://qdrant.converse-mcp.svc.cluster.local:6333"
+              value: "http://qdrant.qdrant.svc.cluster.local:6333"
             - name: HTTP_PORT
               value: "8080"
             - name: TENANT_HEADER
