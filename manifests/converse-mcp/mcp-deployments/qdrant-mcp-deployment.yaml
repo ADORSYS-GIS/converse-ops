@@ -1,0 +1,158 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qdrant-mcp
+  namespace: converse-mcp
+spec:
+  selector:
+    app: qdrant-mcp
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qdrant-mcp
+  namespace: converse-mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qdrant-mcp
+  template:
+    metadata:
+      labels:
+        app: qdrant-mcp
+    spec:
+      containers:
+        - name: qdrant-mcp
+          image: node:22
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              mkdir -p /app
+              cat >/app/server.js <<'JS'
+              const http = require('http');
+              const { URL } = require('url');
+              const QDRANT_URL = process.env.QDRANT_URL || 'http://qdrant.converse-mcp.svc.cluster.local:6333';
+              const PORT = parseInt(process.env.HTTP_PORT || '8080', 10);
+              const TENANT_HEADER = (process.env.TENANT_HEADER || 'x-user-id').toLowerCase();
+              const TENANT_PAYLOAD_KEY = process.env.TENANT_PAYLOAD_KEY || 'tenant_id';
+              const REQUIRE_TENANT = process.env.TENANT_REQUIRE !== 'false';
+              const PREFIX_IDS = process.env.TENANT_PREFIX_IDS !== 'false';
+              const FIXED_COLLECTION = process.env.TENANT_FIXED_COLLECTION || 'documents';
+
+              const fetchJson = async (path, opts = {}) => {
+                const url = new URL(path, QDRANT_URL).toString();
+                const res = await fetch(url, { headers: { 'content-type': 'application/json', ...(opts.headers||{}) }, method: opts.method || 'GET', body: opts.body ? JSON.stringify(opts.body) : undefined });
+                if (!res.ok) return { status: res.status, ok: false, text: await res.text() };
+                try { return { ok: true, json: await res.json() }; } catch { return { ok: true, json: null }; }
+              };
+
+              const ensureCollection = async (name) => {
+                const info = await fetchJson(`/collections/${encodeURIComponent(name)}`);
+                if (info.ok) return true;
+                const create = await fetchJson(`/collections/${encodeURIComponent(name)}`, { method: 'PUT', body: { vectors: { size: 3, distance: 'Cosine' } } });
+                return create.ok;
+              };
+
+              const vec3 = (text) => { let a=0,b=0,c=0; for (let i=0;i<text.length;i++){ const ch=text.charCodeAt(i); if(i%3===0)a+=ch; else if(i%3===1)b+=ch; else c+=ch; } return [a/1000,b/1000,c/1000]; };
+              const mustTenant = (tenantId) => ({ must: [ { key: TENANT_PAYLOAD_KEY, match: { value: tenantId } } ] });
+              const jsonRpcResult = (id, result) => ({ jsonrpc: '2.0', id, result });
+              const jsonRpcError = (id, code, message) => ({ jsonrpc: '2.0', id, error: { code, message } });
+
+              const server = http.createServer(async (req, res) => {
+                try {
+                  if (req.method === 'GET' && req.url === '/health') { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify({ status: 'ok', mode: 'http' })); return; }
+                  if (req.method !== 'POST' || req.url !== '/mcp') { res.writeHead(404); res.end(); return; }
+
+                  const tenantId = (req.headers[TENANT_HEADER]||'').toString().trim();
+                  if (REQUIRE_TENANT && !tenantId) { res.writeHead(401, { 'content-type': 'application/json' }); res.end(JSON.stringify(jsonRpcError(null, -32600, `Missing required tenant header: ${TENANT_HEADER}`))); return; }
+
+                  let body=''; req.on('data', ch => body+=ch); await new Promise(r=>req.on('end', r));
+                  let rpc; try { rpc = JSON.parse(body); } catch { res.writeHead(400, { 'content-type': 'application/json' }); res.end(JSON.stringify(jsonRpcError(null, -32700, 'Invalid JSON'))); return; }
+                  const batch = Array.isArray(rpc) ? rpc : [rpc];
+                  const out = [];
+
+                  for (const call of batch) {
+                    const id = call.id ?? null;
+                    if (call.method !== 'tools/call' || !call.params || !call.params.name) { out.push(jsonRpcError(id, -32601, 'Method not found')); continue; }
+                    const name = call.params.name;
+                    const args = call.params.arguments || {};
+                    const collection = FIXED_COLLECTION || args.collection || 'documents';
+
+                    if (!(await ensureCollection(collection))) { out.push(jsonRpcError(id, -32000, 'Failed to ensure collection')); continue; }
+
+                    if (name === 'add_documents') {
+                      const docs = Array.isArray(args.documents) ? args.documents : [];
+                      const points = docs.map(d => ({ id: PREFIX_IDS && d.id !== undefined ? `${tenantId}:${d.id}` : d.id, vector: vec3(d.text||''), payload: { ...(d.metadata||{}), text: d.text||'', [TENANT_PAYLOAD_KEY]: tenantId } }));
+                      const r = await fetchJson(`/collections/${encodeURIComponent(collection)}/points`, { method: 'PUT', body: { points } });
+                      if (!r.ok) { out.push(jsonRpcError(id, -32001, `Upsert failed: ${r.status}`)); continue; }
+                      out.push(jsonRpcResult(id, { status: 'ok', upserted: points.length }));
+                      continue;
+                    }
+
+                    if (name === 'semantic_search' || name === 'hybrid_search') {
+                      const query = (args.query||'').toString();
+                      const vector = vec3(query);
+                      const filter = args.filter && typeof args.filter==='object' ? { ...args.filter } : {};
+                      const merged = { ...filter, must: [ ...(filter.must||[]), ...(mustTenant(tenantId).must) ] };
+                      const r = await fetchJson(`/collections/${encodeURIComponent(collection)}/points/search`, { method: 'POST', body: { vector, limit: args.limit||5, with_payload: true, filter: merged } });
+                      if (!r.ok) { out.push(jsonRpcError(id, -32002, `Search failed: ${r.status}`)); continue; }
+                      out.push(jsonRpcResult(id, r.json || []));
+                      continue;
+                    }
+
+                    if (name === 'delete_documents') {
+                      let ids = Array.isArray(args.ids) ? args.ids : [];
+                      if (PREFIX_IDS) ids = ids.map(x => `${tenantId}:${x}`);
+                      const r = await fetchJson(`/collections/${encodeURIComponent(collection)}/points/delete`, { method: 'POST', body: { points: ids } });
+                      if (!r.ok) { out.push(jsonRpcError(id, -32003, `Delete failed: ${r.status}`)); continue; }
+                      out.push(jsonRpcResult(id, { status: 'ok', requested: ids.length }));
+                      continue;
+                    }
+
+                    out.push(jsonRpcError(id, -32601, `Unknown tool: ${name}`));
+                  }
+
+                  res.writeHead(200, { 'content-type': 'application/json' });
+                  res.end(JSON.stringify(Array.isArray(rpc) ? out : out[0]));
+                } catch (e) {
+                  res.writeHead(500, { 'content-type': 'application/json' });
+                  res.end(JSON.stringify({ error: 'internal', message: e?.message }));
+                }
+              });
+
+              server.listen(PORT, '0.0.0.0', () => {
+                console.error(`Minimal MCP-compatible server running on http://0.0.0.0:${PORT}/mcp`);
+              });
+              JS
+              node /app/server.js
+          env:
+            - name: QDRANT_URL
+              value: "http://qdrant.qdrant.svc.cluster.local:6333"
+            - name: HTTP_PORT
+              value: "8080"
+            - name: TENANT_HEADER
+              value: "x-user-id"
+            - name: TENANT_PAYLOAD_KEY
+              value: "tenant_id"
+            - name: TENANT_REQUIRE
+              value: "true"
+            - name: TENANT_PREFIX_IDS
+              value: "true"
+            - name: TENANT_FIXED_COLLECTION
+              value: "documents"
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1Gi

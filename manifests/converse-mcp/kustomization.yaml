@@ -1,2 +1,11 @@
 resources:
-  - context7-mcp.yaml
+  - mcp-configs/context7-mcp.yaml
+  - mcp-deployments/brave-search-deployment.yaml
+  - mcp-configs/brave-search-mcp.yaml
+  - mcp-configs/firecrawl-mcp.yaml
+  - mcp-deployments/qdrant-deployment.yaml
+  - mcp-deployments/qdrant-mcp-deployment.yaml
+  - mcp-configs/qdrant-mcp.yaml
+  - mcp-configs/tavily-mcp.yaml
+  - mcp-deployments/terraform-mcp-deployment.yaml
+  - mcp-configs/terraform-mcp.yaml
