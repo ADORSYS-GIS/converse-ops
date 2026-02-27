@@ -1,11 +1,8 @@
 resources:
-  - mcp-secrets.yaml
   - mcp-configs/context7-mcp.yaml
   - mcp-deployments/brave-search-deployment.yaml
   - mcp-configs/brave-search-mcp.yaml
   - mcp-configs/firecrawl-mcp.yaml
-  - mcp-deployments/kubernetes-mcp-deployment.yaml
-  - mcp-configs/kubernetes-mcp.yaml
   - mcp-deployments/qdrant-deployment.yaml
   - mcp-deployments/qdrant-mcp-deployment.yaml
   - mcp-configs/qdrant-mcp.yaml
