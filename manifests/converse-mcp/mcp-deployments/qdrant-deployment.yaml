@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: qdrant
-  namespace: converse-mcp
+  namespace: qdrant
 spec:
   selector:
     app: qdrant
@@ -19,7 +19,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: qdrant-storage
-  namespace: converse-mcp
+  namespace: qdrant
 spec:
   accessModes:
     - ReadWriteOnce
@@ -31,7 +31,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: qdrant
-  namespace: converse-mcp
+  namespace: qdrant
 spec:
   replicas: 1
   selector:
@@ -100,3 +100,26 @@ spec:
         - name: qdrant-storage
           persistentVolumeClaim:
             claimName: qdrant-storage
+
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: qdrant-ingress-from-qdrant-mcp-only
+  namespace: qdrant
+spec:
+  podSelector:
+    matchLabels:
+      app: qdrant
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app: qdrant-mcp
+      ports:
+        - protocol: TCP
+          port: 6333
+        - protocol: TCP
+          port: 6334
