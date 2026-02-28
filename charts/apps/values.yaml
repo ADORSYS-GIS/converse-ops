@@ -507,7 +507,7 @@ applications:
                       - api-main.ai.camer.digital
 
           opa:
-            enabled: false
+            enabled: true
             configMaps:
               config:
                 enabled: true
@@ -543,6 +543,23 @@ applications:
             controllers:
               main:
                 replicas: 1
+                containers:
+                  authz:
+                    env:
+                      DATABASE_URL:
+                        valueFrom:
+                          secretKeyRef:
+                            name: lightbridge-main-app
+                            key: uri
+              migrate:
+                containers:
+                  authz:
+                    env:
+                      DATABASE_URL:
+                        valueFrom:
+                          secretKeyRef:
+                            name: lightbridge-main-app
+                            key: uri
             persistence:
               tls:
                 name: authz-tls
