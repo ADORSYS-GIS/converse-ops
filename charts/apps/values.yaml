@@ -479,6 +479,8 @@ applications:
                 namespace: converse-lightbridge
               spec:
                 instances: 2
+                storage:
+                  size: 20
             - |
               apiVersion: postgresql.cnpg.io/v1
               kind: Cluster
@@ -487,6 +489,8 @@ applications:
                 namespace: converse-lightbridge
               spec:
                 instances: 2
+                storage:
+                  size: 20
                 imageName: ghcr.io/clevyr/cloudnativepg-timescale:17-ts2
                 postgresql:
                   shared_preload_libraries:
