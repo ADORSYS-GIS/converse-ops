@@ -640,7 +640,6 @@ applications:
                     postInitTemplateSQL:
                       - CREATE EXTENSION timescaledb VERSION '2.19.3';
                       - CREATE EXTENSION IF NOT EXISTS timescaledb;
-                      - CREATE EXTENSION IF NOT EXISTS timescaledb_toolkit;
     destination:
       namespace: converse-lightbridge
     syncPolicy:
