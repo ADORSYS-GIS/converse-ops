@@ -472,7 +472,7 @@ applications:
                       DATABASE_URL:
                         valueFrom:
                           secretKeyRef:
-                            name: lightbridge-main-app
+                            name: lightbridge-main-db-app
                             key: uri
               migrate:
                 containers:
@@ -481,7 +481,7 @@ applications:
                       DATABASE_URL:
                         valueFrom:
                           secretKeyRef:
-                            name: lightbridge-main-app
+                            name: lightbridge-main-db-app
                             key: uri
             persistence:
               tls:
