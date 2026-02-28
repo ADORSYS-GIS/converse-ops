@@ -426,6 +426,7 @@ applications:
               enabled: false
 
           api:
+            enabled: false
             controllers:
               main:
                 replicas: 1
@@ -434,6 +435,7 @@ applications:
                 name: authz-tls
 
           opa:
+            enabled: false
             controllers:
               main:
                 replicas: 1
@@ -442,6 +444,7 @@ applications:
                 name: authz-tls
 
           usage:
+            enabled: false
             enabled: true
             persistence:
               tls:
