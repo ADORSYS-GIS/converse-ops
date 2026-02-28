@@ -445,7 +445,6 @@ applications:
 
           usage:
             enabled: false
-            enabled: true
             persistence:
               tls:
                 name: authz-tls
