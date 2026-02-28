@@ -514,7 +514,7 @@ applications:
                 imageCatalogRef:
                   apiGroup: postgresql.cnpg.io
                   kind: ClusterImageCatalog
-                  name: timescale
+                  name: lightbridge-usage
                   major: 17
                 storage:
                   storageClass: linode-block-storage
