@@ -491,6 +491,7 @@ applications:
                 enabled: true
                 annotations:
                   cert-manager.io/cluster-issuer: cert-home-cert-http
+                  traefik.ingress.kubernetes.io/service.serversscheme: https
                 className: traefik
                 hosts:
                   - host: api-main.ai.camer.digital
