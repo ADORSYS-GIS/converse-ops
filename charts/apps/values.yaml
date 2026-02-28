@@ -491,8 +491,6 @@ applications:
                 enabled: true
                 annotations:
                   cert-manager.io/cluster-issuer: cert-home-cert-http
-                  traefik.ingress.kubernetes.io/service.serversscheme: https
-                  traefik.ingress.kubernetes.io/service.serverstransport: insecure-transport
                 className: traefik
                 hosts:
                   - host: api-main.ai.camer.digital
@@ -506,7 +504,11 @@ applications:
                   - secretName: api-main.ai.camer.digital-tls
                     hosts:
                       - api-main.ai.camer.digital
-
+            service:
+              authz:
+                annotations:
+                  traefik.ingress.kubernetes.io/service.serversscheme: https
+                  #traefik.ingress.kubernetes.io/service.serverstransport: converse-lightbridge-insecure-transport
           opa:
             enabled: true
             configMaps:
