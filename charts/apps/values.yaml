@@ -414,7 +414,7 @@ applications:
       - resources-finalizer.argocd.argoproj.io
     source:
       repoURL: https://adorsys-gis.github.io/lightbridge-authz
-      targetRevision: 0.5.8
+      targetRevision: 0.5.9
       chart: lightbridge
       helm:
         releaseName: lightbridge
@@ -553,7 +553,7 @@ applications:
                       DATABASE_URL:
                         valueFrom:
                           secretKeyRef:
-                            name: lightbridge-main-app
+                            name: lightbridge-main-db-app
                             key: uri
               migrate:
                 containers:
@@ -562,14 +562,74 @@ applications:
                       DATABASE_URL:
                         valueFrom:
                           secretKeyRef:
-                            name: lightbridge-main-app
+                            name: lightbridge-main-db-app
                             key: uri
             persistence:
               tls:
                 name: authz-tls
 
           usage:
-            enabled: false
+            enabled: true
+            configMaps:
+              config:
+                enabled: true
+                data:
+                  config.yaml: |
+                    logging:
+                      level: info
+                    database:
+                      url: "${DATABASE_URL}"
+                      pool_size: 10
+                    otel:
+                      enabled: false
+                      otlp_endpoint: http://localhost:4317
+                      service_name: lightbridge-authz-usage
+                    server:
+                      usage:
+                        address: 0.0.0.0
+                        port: 3000
+                        tls:
+                          cert_path: /etc/lightbridge/tls/tls.crt
+                          key_path: /etc/lightbridge/tls/tls.key
+
+            controllers:
+              main:
+                replicas: 2
+                containers:
+                  authz:
+                    env:
+                      DATABASE_URL:
+                        valueFrom:
+                          secretKeyRef:
+                            name: lightbridge-usage-db-app
+                            key: uri
+              migrate:
+                containers:
+                  authz:
+                    env:
+                      DATABASE_URL:
+                        valueFrom:
+                          secretKeyRef:
+                            name: lightbridge-usage-db-app
+                            key: uri
+            ingress:
+              main:
+                enabled: true
+                annotations:
+                  cert-manager.io/cluster-issuer: cert-home-cert-http
+                className: traefik
+                hosts:
+                  - host: api-usage.ai.camer.digital
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                        service:
+                          identifier: authz
+                          port: http
+                tls:
+                  - secretName: api-usage.ai.camer.digital-tls
+                    hosts:
+                      - api-usage.ai.camer.digital
             persistence:
               tls:
                 name: authz-tls
