@@ -546,7 +546,7 @@ applications:
                       service_name: "lightbridge-authz"
             controllers:
               main:
-                replicas: 1
+                replicas: 2
                 containers:
                   authz:
                     env:
@@ -610,7 +610,7 @@ applications:
               apiVersion: postgresql.cnpg.io/v1
               kind: Cluster
               metadata:
-                name: lightbridge-main
+                name: lightbridge-main-db
                 namespace: converse-lightbridge
               spec:
                 instances: 2
@@ -629,7 +629,7 @@ applications:
               apiVersion: postgresql.cnpg.io/v1
               kind: ClusterImageCatalog
               metadata:
-                name: lightbridge-usage
+                name: lightbridge-usage-db
                 namespace: converse-lightbridge
               spec:
                 images:
@@ -639,7 +639,7 @@ applications:
               apiVersion: postgresql.cnpg.io/v1
               kind: Cluster
               metadata:
-                name: lightbridge-usage
+                name: lightbridge-usage-db
                 namespace: converse-lightbridge
               spec:
                 instances: 2
@@ -647,7 +647,7 @@ applications:
                 imageCatalogRef:
                   apiGroup: postgresql.cnpg.io
                   kind: ClusterImageCatalog
-                  name: lightbridge-usage
+                  name: lightbridge-usage-db
                   major: 17
                 storage:
                   storageClass: linode-block-storage

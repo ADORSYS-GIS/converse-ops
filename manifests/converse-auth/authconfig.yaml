@@ -4,18 +4,52 @@ metadata:
   name: converse-api-protection
   namespace: converse-llm
 spec:
-  # String array
+  # 1. Target the Gateway API HTTPRoute (This tells Kuadrant/Envoy what to protect)
   hosts:
-    - "*" # Replace with your AI Gateway host if specific
-  authentication:
-    "librechat-api-key":
-      apiKey:
-        selector:
-          matchLabels:
-            group: converse-api-key # Labels on your API Key Secrets
-      credentials:
-        authorizationHeader:
-          prefix: APIKEY
-    keycloak:
-      jwt:
-        issuerUrl: https://accounts.ssegning.com/realms/camer-digital
+    - "ai.camer.digital" # External AI/LLM API Endpoint
+
+  # 2. Establish Identity
+  # Because `lightbridge-opa` combines both authentication (who are you) and
+  # authorization (are you allowed) into a single REST call, we tell Authorino
+  # to accept the request as "anonymous" at this phase, and let the authorization
+  # phase do the actual validation.
+  identity:
+    "lightbridge-api-key":
+      anonymous: {}
+
+  # 3. Call your Custom Lightbridge OPA endpoint
+  authorization:
+    "lightbridge-validation":
+      http:
+        # Using HTTPS since your lightbridge-opa server uses cert-manager TLS
+        endpoint: https://lightbridge-opa.converse-lightbridge.svc.cluster.local:3000/v1/authorino/validate
+        method: POST
+        headers:
+          "Content-Type":
+            value: "application/json"
+        # Construct the JSON payload required by your OAS3 schema
+        body:
+          value: |
+            {
+              "api_key": "{{ context.request.http.headers.authorization | remove: 'Bearer ' }}",
+              "ip": "{{ context.request.http.headers.x-forwarded-for }}"
+            }
+
+  # 4. Pass the Payload Downstream & to OpenTelemetry (OTEL)
+  # Authorino automatically stores the JSON response from your Rust server.
+  # We extract fields and inject them as headers (for the backend apps)
+  # AND as Envoy Dynamic Metadata (for OTEL tracing and Access Logs).
+  response:
+    success:
+      headers:
+        "x-project-id":
+          value: "{{ auth.authorization.lightbridge-validation.project.id }}"
+        "x-account-id":
+          value: "{{ auth.authorization.lightbridge-validation.account.id }}"
+      dynamicMetadata:
+        "llm_project_id":
+          value: "{{ auth.authorization.lightbridge-validation.project.id }}"
+        "llm_account_id":
+          value: "{{ auth.authorization.lightbridge-validation.account.id }}"
+        "llm_api_key_id":
+          value: "{{ auth.authorization.lightbridge-validation.api_key.id }}"
