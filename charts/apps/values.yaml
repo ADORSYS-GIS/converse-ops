@@ -486,6 +486,24 @@ applications:
             persistence:
               tls:
                 name: authz-tls
+            ingress:
+              main:
+                enabled: true
+                annotations:
+                  cert-manager.io/cluster-issuer: cert-home-cert-http
+                className: traefik
+                hosts:
+                  - host: api-main.ai.camer.digital
+                    paths:
+                      - path: /
+                        pathType: Prefix
+                        service:
+                          identifier: authz
+                          port: http
+                tls:
+                  - secretName: api-main.ai.camer.digital-tls
+                    hosts:
+                      - api-main.ai.camer.digital
 
           opa:
             enabled: false
