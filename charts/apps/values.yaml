@@ -431,6 +431,38 @@ applications:
 
           api:
             enabled: true
+            configMaps:
+              config:
+                enabled: true
+                data:
+                  config.yaml: |
+                    logging:
+                      level: info
+                    database:
+                      url: "${DATABASE_URL}"
+                      pool_size: 10
+                    oauth2:
+                      jwks_url: http://keycloak:9100/realms/dev/protocol/openid-connect/certs
+                    server:
+                      api:
+                        address: 0.0.0.0
+                        port: 3000
+                        tls:
+                          cert_path: /etc/lightbridge/tls/tls.crt
+                          key_path: /etc/lightbridge/tls/tls.key
+                      opa:
+                        address: 0.0.0.0
+                        port: 3000
+                        tls:
+                          cert_path: /etc/lightbridge/tls/tls.crt
+                          key_path: /etc/lightbridge/tls/tls.key
+                        basic_auth:
+                          username: authorino
+                          password: "${OPA_PASSWORD}"
+                    otel:
+                      enabled: false
+                      otlp_endpoint: "http://localhost:4317"
+                      service_name: "lightbridge-authz"
             controllers:
               main:
                 replicas: 2
@@ -457,6 +489,38 @@ applications:
 
           opa:
             enabled: false
+            configMaps:
+              config:
+                enabled: true
+                data:
+                  config.yaml: |
+                    logging:
+                      level: info
+                    database:
+                      url: "${DATABASE_URL}"
+                      pool_size: 10
+                    oauth2:
+                      jwks_url: http://keycloak:9100/realms/dev/protocol/openid-connect/certs
+                    server:
+                      api:
+                        address: 0.0.0.0
+                        port: 3000
+                        tls:
+                          cert_path: /etc/lightbridge/tls/tls.crt
+                          key_path: /etc/lightbridge/tls/tls.key
+                      opa:
+                        address: 0.0.0.0
+                        port: 3000
+                        tls:
+                          cert_path: /etc/lightbridge/tls/tls.crt
+                          key_path: /etc/lightbridge/tls/tls.key
+                        basic_auth:
+                          username: authorino
+                          password: "${OPA_PASSWORD}"
+                    otel:
+                      enabled: false
+                      otlp_endpoint: "http://localhost:4317"
+                      service_name: "lightbridge-authz"
             controllers:
               main:
                 replicas: 1
