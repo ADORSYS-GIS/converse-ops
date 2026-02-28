@@ -471,6 +471,31 @@ applications:
                 usages:
                   - server auth
                   - client auth
+            - |
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Cluster
+              metadata:
+                name: lightbridge-main
+                namespace: converse-lightbridge
+              spec:
+                instances: 2
+            - |
+              apiVersion: postgresql.cnpg.io/v1
+              kind: Cluster
+              metadata:
+                name: lightbridge-usage
+                namespace: converse-lightbridge
+              spec:
+                instances: 2
+                imageName: ghcr.io/clevyr/cloudnativepg-timescale:17-ts2
+                postgresql:
+                  shared_preload_libraries:
+                    - timescaledb
+                bootstrap:
+                  initdb:
+                    postInitTemplateSQL:
+                      - CREATE EXTENSION IF NOT EXISTS timescaledb;
+                      - CREATE EXTENSION IF NOT EXISTS timescaledb_toolkit;
     destination:
       namespace: converse-lightbridge
     syncPolicy:
