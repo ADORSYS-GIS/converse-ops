@@ -508,7 +508,6 @@ applications:
               authz:
                 annotations:
                   traefik.ingress.kubernetes.io/service.serversscheme: https
-                  #traefik.ingress.kubernetes.io/service.serverstransport: converse-lightbridge-insecure-transport
                   traefik.ingress.kubernetes.io/service.serverstransport: converse-lightbridge-insecure-transport@kubernetescrd
           opa:
             enabled: true
@@ -633,6 +632,11 @@ applications:
             persistence:
               tls:
                 name: authz-tls
+            service:
+              authz:
+                annotations:
+                  traefik.ingress.kubernetes.io/service.serversscheme: https
+                  traefik.ingress.kubernetes.io/service.serverstransport: converse-lightbridge-insecure-transport@kubernetescrd
           rawRessources:
             - |
               apiVersion: traefik.io/v1alpha1
