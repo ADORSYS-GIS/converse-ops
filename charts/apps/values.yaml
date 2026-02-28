@@ -414,7 +414,7 @@ applications:
       - resources-finalizer.argocd.argoproj.io
     source:
       repoURL: https://adorsys-gis.github.io/lightbridge-authz
-      targetRevision: 0.5.7
+      targetRevision: 0.5.8
       chart: lightbridge
       helm:
         releaseName: lightbridge
@@ -509,7 +509,7 @@ applications:
                 annotations:
                   traefik.ingress.kubernetes.io/service.serversscheme: https
                   #traefik.ingress.kubernetes.io/service.serverstransport: converse-lightbridge-insecure-transport
-                  traefik.ingress.kubernetes.io/service.serverstransport: insecure-transport
+                  traefik.ingress.kubernetes.io/service.serverstransport: converse-lightbridge-insecure-transport@kubernetescrd
           opa:
             enabled: true
             configMaps:
