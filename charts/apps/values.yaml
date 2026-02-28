@@ -529,9 +529,12 @@ applications:
                 postgresql:
                   shared_preload_libraries:
                     - timescaledb
+                postgresUID: 70 # see below
+                postgresGID: 70 # see below
                 bootstrap:
                   initdb:
                     postInitTemplateSQL:
+                      - CREATE EXTENSION timescaledb VERSION '2.19.3';
                       - CREATE EXTENSION IF NOT EXISTS timescaledb;
                       - CREATE EXTENSION IF NOT EXISTS timescaledb_toolkit;
     destination:
