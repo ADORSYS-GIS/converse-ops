@@ -492,6 +492,7 @@ applications:
                 annotations:
                   cert-manager.io/cluster-issuer: cert-home-cert-http
                   traefik.ingress.kubernetes.io/service.serversscheme: https
+                  traefik.ingress.kubernetes.io/service.serverstransport: insecure-transport
                 className: traefik
                 hosts:
                   - host: api-main.ai.camer.digital
@@ -570,6 +571,14 @@ applications:
               tls:
                 name: authz-tls
           rawRessources:
+            - |
+              apiVersion: traefik.containo.us/v1alpha1
+              kind: ServersTransport
+              metadata:
+                name: insecure-transport
+                namespace: converse-lightbridge
+              spec:
+                insecureSkipVerify: true
             - |
               apiVersion: cert-manager.io/v1
               kind: Certificate
