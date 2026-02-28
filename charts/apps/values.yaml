@@ -509,7 +509,7 @@ applications:
                 annotations:
                   traefik.ingress.kubernetes.io/service.serversscheme: https
                   #traefik.ingress.kubernetes.io/service.serverstransport: converse-lightbridge-insecure-transport
-                  traefik.ingress.kubernetes.io/service.serverstransport: converse-lightbridge-insecure-transport@kubernetescrd
+                  traefik.ingress.kubernetes.io/service.serverstransport: insecure-transport
           opa:
             enabled: true
             configMaps:
