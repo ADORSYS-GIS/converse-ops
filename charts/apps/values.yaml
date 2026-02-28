@@ -482,7 +482,15 @@ applications:
               spec:
                 instances: 2
                 storage:
-                  size: "20Gi"
+                  storageClass: linode-block-storage
+                  size: "5Gi"
+                resources:
+                  limits:
+                    cpu: 300m
+                    memory: 1Gi
+                  requests:
+                    cpu: 200m
+                    memory: 500Mi
             - |
               apiVersion: postgresql.cnpg.io/v1
               kind: Cluster
@@ -492,7 +500,15 @@ applications:
               spec:
                 instances: 2
                 storage:
-                  size: "20Gi"
+                  storageClass: linode-block-storage
+                  size: "5Gi"
+                resources:
+                  limits:
+                    cpu: 300m
+                    memory: 1Gi
+                  requests:
+                    cpu: 200m
+                    memory: 500Mi
                 imageName: ghcr.io/clevyr/cloudnativepg-timescale:17-ts2
                 postgresql:
                   shared_preload_libraries:
