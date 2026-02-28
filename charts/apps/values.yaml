@@ -492,6 +492,17 @@ applications:
                     cpu: 200m
                     memory: 500Mi
             - |
+              ---
+              apiVersion: postgresql.cnpg.io/v1
+              kind: ClusterImageCatalog
+              metadata:
+                name: lightbridge-usage
+                namespace: converse-lightbridge
+              spec:
+                images:
+                  - major: 17
+                    image: timescale/timescaledb:2.21.1-pg17
+              ---
               apiVersion: postgresql.cnpg.io/v1
               kind: Cluster
               metadata:
@@ -499,9 +510,14 @@ applications:
                 namespace: converse-lightbridge
               spec:
                 instances: 2
+                imageCatalogRef:
+                  apiGroup: postgresql.cnpg.io
+                  kind: ClusterImageCatalog
+                  name: timescale
+                  major: 17
                 storage:
                   storageClass: linode-block-storage
-                  size: "5Gi"
+                  size: "10Gi"
                 resources:
                   limits:
                     cpu: 300m
