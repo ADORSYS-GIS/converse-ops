@@ -517,7 +517,7 @@ applications:
                 data:
                   config.yaml: |
                     logging:
-                      level: info
+                      level: debug
                     database:
                       url: "${DATABASE_URL}"
                       pool_size: 10
