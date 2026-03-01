@@ -4,6 +4,7 @@ metadata:
   name: converse
   namespace: converse-llm
 spec:
+  logLevel: debug
   listener:
     tls:
       enabled: false
