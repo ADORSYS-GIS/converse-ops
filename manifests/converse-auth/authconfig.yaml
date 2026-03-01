@@ -20,9 +20,13 @@ spec:
       http:
         url: https://lightbridge-opa.converse-lightbridge.svc.cluster.local:3000/v1/authorino/validate
         method: POST
-        #body:
-        #  value: >
-        #    {"api_key": "{context.request.http.headers.authorization.@extract:{\"sep\":\" \",\"pos\":1}}", "ip": "{context.request.http.headers.x-forwarded-for}"}
+        # Configure Basic Auth for the OPA server using a Kubernetes Secret
+        sharedSecretRef:
+          name: lightbridge-opa-auth
+          key: credentials
+        credentials:
+          authorizationHeader:
+            prefix: Basic
         bodyParameters:
           api_key:
             selector: "context.request.http.headers.authorization.@extract:{\"sep\":\" \",\"pos\":1}"
