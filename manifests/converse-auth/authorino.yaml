@@ -13,9 +13,9 @@ spec:
   volumes:
     items:
     - name: lightbridge-ca
-      secret:
-        secretName: authz-tls # You'll need to sync/copy this secret to converse-llm namespace
-    mounts:
-    - name: lightbridge-ca
-      mountPath: /etc/pki/tls/certs/lightbridge-ca.crt
-      subPath: ca.crt
+      mountPath: /etc/pki/tls/certs
+      secrets:
+      - authz-tls
+      items:
+      - key: ca.crt
+        path: lightbridge-ca.crt
