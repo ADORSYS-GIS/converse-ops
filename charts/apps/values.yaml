@@ -442,7 +442,7 @@ applications:
                       url: "${DATABASE_URL}"
                       pool_size: 10
                     oauth2:
-                      jwks_url: http://keycloak:9100/realms/dev/protocol/openid-connect/certs
+                      jwks_url: https://accounts.ssegning.com/realms/camer-digital/protocol/openid-connect/certs
                     server:
                       api:
                         address: 0.0.0.0
@@ -469,6 +469,11 @@ applications:
                 containers:
                   authz:
                     env:
+                      PORT: "3000"
+                      POD_NAME:
+                        valueFrom:
+                          fieldRef:
+                            fieldPath: metadata.name
                       DATABASE_URL:
                         valueFrom:
                           secretKeyRef:
@@ -517,12 +522,12 @@ applications:
                 data:
                   config.yaml: |
                     logging:
-                      level: debug
+                      level: "${RUST_LOG}"
                     database:
                       url: "${DATABASE_URL}"
                       pool_size: 10
                     oauth2:
-                      jwks_url: http://keycloak:9100/realms/dev/protocol/openid-connect/certs
+                      jwks_url: https://accounts.ssegning.com/realms/camer-digital/protocol/openid-connect/certs
                     server:
                       api:
                         address: 0.0.0.0
@@ -550,6 +555,11 @@ applications:
                   authz:
                     env:
                       RUST_LOG: "DEBUG"
+                      PORT: "3000"
+                      POD_NAME:
+                        valueFrom:
+                          fieldRef:
+                            fieldPath: metadata.name
                       DATABASE_URL:
                         valueFrom:
                           secretKeyRef:
