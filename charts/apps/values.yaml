@@ -53,8 +53,6 @@ applications:
                 level:
                   default: info
               # Increase xDS gRPC message size limit to 32MB to fix "ResourceExhausted" error
-              xds:
-                maxMessageSize: 33554432
               rateLimit:
                 backend:
                   type: Redis
