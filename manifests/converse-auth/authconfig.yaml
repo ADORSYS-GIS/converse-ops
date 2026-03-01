@@ -20,9 +20,14 @@ spec:
       http:
         url: https://lightbridge-opa.converse-lightbridge.svc.cluster.local:3000/v1/authorino/validate
         method: POST
+        #body:
+        #  value: >
+        #    {"api_key": "{context.request.http.headers.authorization.@extract:{\"sep\":\" \",\"pos\":1}}", "ip": "{context.request.http.headers.x-forwarded-for}"}
         bodyParameters:
-          api_key: "{{context.request.http.headers.authorization.lbl_api_key}}"
-          "ip": "{{context.request.http.headers.x-forwarded-for}}"
+          api_key:
+            value: "{{context.request.http.headers.authorization.lbl_api_key}}"
+          "ip":
+            value: "{{context.request.http.headers.x-forwarded-for}}"
         contentType: "application/json"
 
   # Enforce that the API Key was actually validated and belongs to a project
