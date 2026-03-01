@@ -76,7 +76,7 @@ applications:
         prune: true
         selfHeal: true
 
-  - name: ai-stack
+  - name: stack
     finalizers:
       - resources-finalizer.argocd.argoproj.io
     source:
