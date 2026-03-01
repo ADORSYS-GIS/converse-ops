@@ -11,7 +11,7 @@ spec:
   # the custom REST API for both AuthN and AuthZ, we set identity to anonymous.
   authentication:
     "anonymous-identity":
-      anonymous: { }
+      anonymous: {}
   
   # Fetch data from the external REST API (this acts as AuthN + AuthZ combined)
   # If this endpoint returns a non-200 status, Authorino rejects the request.
@@ -28,6 +28,15 @@ spec:
         body:
           selector: >
             {"api_key": "{context.request.http.headers.authorization.@extract:{\"sep\":\" \",\"pos\":1}}", "ip": "{context.request.http.headers.x-forwarded-for}"}
+
+  # Enforce that the API Key was actually validated and belongs to a project
+  authorization:
+    "enforce-valid-key":
+      patternMatching:
+        rules:
+          - selector: "auth.metadata.lightbridge-validation.project.id"
+            operator: "neq"
+            value: ""
 
   response:
     success:
