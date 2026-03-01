@@ -5,7 +5,7 @@ metadata:
   namespace: converse-llm
 spec:
   hosts:
-    - "ai.camer.digital"
+    - "api.ai.camer.digital"
   
   # Identity phase is still required by Authorino, but since we rely on 
   # the custom REST API for both AuthN and AuthZ, we set identity to anonymous.
