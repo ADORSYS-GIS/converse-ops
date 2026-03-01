@@ -22,14 +22,10 @@ spec:
       http:
         url: https://lightbridge-opa.converse-lightbridge.svc.cluster.local:3000/v1/authorino/validate
         method: POST
-        headers:
-          "Content-Type":
-            value: "application/json"
-        # We use 'selector' to construct the JSON payload dynamically.
-        # The @extract modifier removes 'Bearer ' from the Authorization header.
-        body:
-          selector: >
-            {"api_key": "{context.request.http.headers.authorization.@extract:{\"sep\":\" \",\"pos\":1}}", "ip": "{context.request.http.headers.x-forwarded-for}"}
+        bodyParameters:
+          api_key: "{context.request.http.headers.authorization.@extract:{\"sep\":\" \",\"pos\":1}}"
+          "ip": "{context.request.http.headers.x-forwarded-for}"
+        contentType: "application/json"
 
   # Enforce that the API Key was actually validated and belongs to a project
   authorization:
