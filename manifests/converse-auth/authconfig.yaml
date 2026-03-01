@@ -33,7 +33,7 @@ spec:
   authorization:
     "enforce-valid-key":
       patternMatching:
-        rules:
+        patterns:
           - selector: "auth.metadata.lightbridge-validation.project.id"
             operator: "neq"
             value: ""
