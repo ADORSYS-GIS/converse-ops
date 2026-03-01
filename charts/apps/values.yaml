@@ -52,6 +52,9 @@ applications:
               logging:
                 level:
                   default: info
+              # Increase xDS gRPC message size limit to 32MB to fix "ResourceExhausted" error
+              xds:
+                maxMessageSize: 33554432
               rateLimit:
                 backend:
                   type: Redis
@@ -345,7 +348,6 @@ applications:
           tls:
             enabled: true
             domains:
-              - converse-llm.camer.digital
               - api.ai.camer.digital
             secretName: converse-llm-tls
             issuer:
