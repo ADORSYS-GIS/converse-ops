@@ -1,0 +1,61 @@
+{
+  "apiVersion": "aigateway.envoyproxy.io/v1alpha1",
+  "kind": "AIGatewayRoute",
+  "metadata": {
+    "name": "deepseek-v3p1-v2",
+    "namespace": "converse-llm"
+  },
+  "spec": {
+    "llmRequestCosts": [
+      {
+        "metadataKey": "prompt_tokens",
+        "type": "InputToken"
+      },
+      {
+        "metadataKey": "completion_tokens",
+        "type": "OutputToken"
+      },
+      {
+        "metadataKey": "llm_total_token",
+        "type": "TotalToken"
+      }
+    ],
+    "parentRefs": [
+      {
+        "group": "gateway.networking.k8s.io",
+        "kind": "Gateway",
+        "name": "ai-gateway-v2"
+      }
+    ],
+    "rules": [
+      {
+        "backendRefs": [
+          {
+            "modelNameOverride": "accounts/fireworks/models/deepseek-v3p1",
+            "name": "fw-backend-01-svc",
+            "priority": 0,
+            "weight": 1
+          },
+          {
+            "modelNameOverride": "accounts/fireworks/models/deepseek-v3p1",
+            "name": "fw-backend-02-svc",
+            "priority": 1,
+            "weight": 1
+          }
+        ],
+        "matches": [
+          {
+            "headers": [
+              {
+                "name": "x-ai-eg-model",
+                "type": "Exact",
+                "value": "deepseek-v3p1-v2"
+              }
+            ]
+          }
+        ],
+        "modelsOwnedBy": "Envoy AI Gateway"
+      }
+    ]
+  }
+}
