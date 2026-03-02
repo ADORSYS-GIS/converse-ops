@@ -1,4 +1,10 @@
 apiVersion: v1
+kind: Namespace
+metadata:
+  name: qdrant
+
+---
+apiVersion: v1
 kind: Service
 metadata:
   name: qdrant
@@ -115,7 +121,12 @@ spec:
     - Ingress
   ingress:
     - from:
-        - podSelector:
+        # Allow only the Qdrant MCP pods in the converse-mcp namespace.
+        # Note: podSelector alone only matches pods in the *same* namespace as this policy.
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: converse-mcp
+          podSelector:
             matchLabels:
               app: qdrant-mcp
       ports:

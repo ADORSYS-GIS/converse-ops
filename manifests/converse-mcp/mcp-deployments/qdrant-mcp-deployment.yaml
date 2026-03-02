@@ -38,6 +38,7 @@ spec:
               cat >/app/server.js <<'JS'
               const http = require('http');
               const { URL } = require('url');
+              const crypto = require('crypto');
               const QDRANT_URL = process.env.QDRANT_URL || 'http://qdrant.converse-mcp.svc.cluster.local:6333';
               const PORT = parseInt(process.env.HTTP_PORT || '8080', 10);
               const TENANT_HEADER = (process.env.TENANT_HEADER || 'x-user-id').toLowerCase();
@@ -65,6 +66,25 @@ spec:
               const jsonRpcResult = (id, result) => ({ jsonrpc: '2.0', id, result });
               const jsonRpcError = (id, code, message) => ({ jsonrpc: '2.0', id, error: { code, message } });
 
+              // Qdrant point IDs must be integer or UUID. This helper maps arbitrary user IDs
+              // to a deterministic UUID (stable across restarts) to avoid 400 errors.
+              const toDeterministicUuid = (tenantId, id) => {
+                const hex = crypto.createHash('sha1').update(`${tenantId}:${id}`).digest('hex').slice(0, 32);
+                // UUID-ish formatting, with version/variant bits set to common values.
+                const v = `${hex.slice(0, 8)}-${hex.slice(8, 12)}-5${hex.slice(13, 16)}-a${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
+                return v;
+              };
+
+              const pointIdFor = (tenantId, rawId) => {
+                if (rawId === undefined || rawId === null || rawId === '') return undefined;
+                // If caller already provided a number, keep it.
+                if (typeof rawId === 'number') return rawId;
+                // If caller provided a numeric string, coerce to integer.
+                if (typeof rawId === 'string' && /^\d+$/.test(rawId)) return parseInt(rawId, 10);
+                // Otherwise, use deterministic UUID.
+                return toDeterministicUuid(tenantId, String(rawId));
+              };
+
               const server = http.createServer(async (req, res) => {
                 try {
                   if (req.method === 'GET' && req.url === '/health') { res.writeHead(200, { 'content-type': 'application/json' }); res.end(JSON.stringify({ status: 'ok', mode: 'http' })); return; }
@@ -80,6 +100,39 @@ spec:
 
                   for (const call of batch) {
                     const id = call.id ?? null;
+                    // MCP handshake (inspector expects this).
+                    if (call.method === 'initialize') {
+                      out.push(jsonRpcResult(id, {
+                        protocolVersion: process.env.MCP_PROTOCOL_VERSION || '2024-11-05',
+                        capabilities: {
+                          tools: {},
+                        },
+                        serverInfo: {
+                          name: 'qdrant-mcp',
+                          version: '0.1.0',
+                        },
+                      }));
+                      continue;
+                    }
+                    if (call.method === 'notifications/initialized') {
+                      // Notification: no response required, but keeping JSON-RPC semantics
+                      // consistent helps some clients.
+                      if (id !== null) out.push(jsonRpcResult(id, { status: 'ok' }));
+                      continue;
+                    }
+                    // Inspector uses tools/list.
+                    if (call.method === 'tools/list') {
+                      out.push(jsonRpcResult(id, {
+                        tools: [
+                          { name: 'add_documents', description: 'Upsert documents into Qdrant (tenant scoped).', inputSchema: { type: 'object', properties: { documents: { type: 'array' } } } },
+                          { name: 'semantic_search', description: 'Vector search (tenant scoped).', inputSchema: { type: 'object', properties: { query: { type: 'string' }, limit: { type: 'number' } } } },
+                          { name: 'hybrid_search', description: 'Alias for semantic_search (tenant scoped).', inputSchema: { type: 'object', properties: { query: { type: 'string' }, limit: { type: 'number' } } } },
+                          { name: 'delete_documents', description: 'Delete by ids (tenant scoped).', inputSchema: { type: 'object', properties: { ids: { type: 'array' } } } },
+                        ]
+                      }));
+                      continue;
+                    }
+
                     if (call.method !== 'tools/call' || !call.params || !call.params.name) { out.push(jsonRpcError(id, -32601, 'Method not found')); continue; }
                     const name = call.params.name;
                     const args = call.params.arguments || {};
@@ -89,7 +142,11 @@ spec:
 
                     if (name === 'add_documents') {
                       const docs = Array.isArray(args.documents) ? args.documents : [];
-                      const points = docs.map(d => ({ id: PREFIX_IDS && d.id !== undefined ? `${tenantId}:${d.id}` : d.id, vector: vec3(d.text||''), payload: { ...(d.metadata||{}), text: d.text||'', [TENANT_PAYLOAD_KEY]: tenantId } }));
+                      const points = docs.map(d => ({
+                        id: PREFIX_IDS ? pointIdFor(tenantId, d.id) : pointIdFor(tenantId, d.id),
+                        vector: vec3(d.text||''),
+                        payload: { ...(d.metadata||{}), text: d.text||'', [TENANT_PAYLOAD_KEY]: tenantId }
+                      }));
                       const r = await fetchJson(`/collections/${encodeURIComponent(collection)}/points`, { method: 'PUT', body: { points } });
                       if (!r.ok) { out.push(jsonRpcError(id, -32001, `Upsert failed: ${r.status}`)); continue; }
                       out.push(jsonRpcResult(id, { status: 'ok', upserted: points.length }));
@@ -109,7 +166,7 @@ spec:
 
                     if (name === 'delete_documents') {
                       let ids = Array.isArray(args.ids) ? args.ids : [];
-                      if (PREFIX_IDS) ids = ids.map(x => `${tenantId}:${x}`);
+                      ids = ids.map(x => pointIdFor(tenantId, x)).filter(x => x !== undefined);
                       const r = await fetchJson(`/collections/${encodeURIComponent(collection)}/points/delete`, { method: 'POST', body: { points: ids } });
                       if (!r.ok) { out.push(jsonRpcError(id, -32003, `Delete failed: ${r.status}`)); continue; }
                       out.push(jsonRpcResult(id, { status: 'ok', requested: ids.length }));
